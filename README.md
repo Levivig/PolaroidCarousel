@@ -4,7 +4,7 @@ A dependency-free iOS 16+ carousel with an overlapping deck, continuous scroll t
 
 ## Try the demo
 
-Open [Example/PolaroidDemo.xcodeproj](Example/PolaroidDemo.xcodeproj), choose the **PolaroidDemo** scheme and an iPhone simulator, then run. **Field Notes** shows five original illustrated postcards. Swipe the deck, tap a postcard to flip it open and read its note, use the arrow buttons to select programmatically, or switch between **Fan** and **Stack**. The demo uses the same public SwiftUI API shown below.
+Open [Example/PolaroidDemo.xcodeproj](Example/PolaroidDemo.xcodeproj), choose the **PolaroidDemo** scheme and an iPhone simulator, then run. **Field Notes** shows 15 original illustrated postcards. Swipe the deck, tap a postcard to flip it open and read its note, use the arrow buttons to select programmatically, or switch between **Fan** and **Stack**. The demo uses the same public SwiftUI API shown below.
 
 On launch, the first card appears over the stack, then the cards fan out with a subtle spring. On supported iPhones, a light selection tick marks each new card as a swipe crosses it. Launch the app afresh to replay the entrance.
 
