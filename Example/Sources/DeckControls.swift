@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DeckControls: View {
-    let card: Postcard
+    let card: Postcard?
     let index: Int
     let count: Int
     @Binding var isCollapsed: Bool
@@ -11,15 +11,20 @@ struct DeckControls: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             HStack(alignment: .center, spacing: 14) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("\(index + 1) / \(count)")
-                        .font(.caption.monospacedDigit().weight(.medium))
-                        .foregroundStyle(.secondary)
-                        .accessibilityLabel("Card \(index + 1) of \(count)")
-                    Text(card.title)
-                        .font(.title3.weight(.semibold))
-                    Text(card.subtitle)
-                        .font(.footnote)
+                if let card {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("\(index + 1) / \(count)")
+                            .font(.caption.monospacedDigit().weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .accessibilityLabel("Card \(index + 1) of \(count)")
+                        Text(card.title)
+                            .font(.title3.weight(.semibold))
+                        Text(card.subtitle)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                } else {
+                    Text("No cards")
                         .foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
@@ -43,5 +48,6 @@ struct DeckControls: View {
                 .background(.thinMaterial, in: .circle)
         }
         .buttonStyle(.plain)
+        .disabled(count < 2)
     }
 }

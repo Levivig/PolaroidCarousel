@@ -33,6 +33,49 @@ struct CarouselGeometryTests {
         }
     }
 
+    @Test(arguments: 2...4)
+    func smallFansShowEachLogicalCardOnceThroughoutTheLoop(count: Int) throws {
+        let deck = CarouselDeck(count: count)
+        let start = deck.middleItem(for: 0)
+        for tick in -(count * 32)...(count * 32) {
+            let page = CGFloat(start) + CGFloat(tick) / 16
+            let offset = geometry.offset(forPage: page)
+            let range = try #require(geometry.queryRange(midX: offset + geometry.size.width / 2, count: deck.virtualCount))
+            let visible = range.compactMap { item -> Int? in
+                let position = geometry.position(of: item, atOffset: offset)
+                guard CarouselGeometry.presentation(at: position, collapsed: false, cardCount: count) != nil
+                else { return nil }
+                return deck.logicalIndex(at: item)
+            }
+            #expect(visible.sorted() == Array(0..<count), "At page \(page)")
+        }
+    }
+
+    @Test(arguments: [(2, -0.75, 1.25), (3, -1.5, 1.5), (4, -1.75, 2.25)])
+    func smallFanReturningCardMeetsBehindTheDeck(count: Int, lower: CGFloat, upper: CGFloat) throws {
+        let trailingPosition = upper - 0.000_001
+        let trailing = try #require(CarouselGeometry.presentation(at: trailingPosition, collapsed: false, cardCount: count))
+        let leading = try #require(CarouselGeometry.presentation(at: lower, collapsed: false, cardCount: count))
+        let foreground = try #require(CarouselGeometry.presentation(at: lower.rounded(.up), collapsed: false, cardCount: count))
+        #expect(abs(trailingPosition + trailing.pose.dx - (lower + leading.pose.dx)) < 1e-8)
+        #expect(abs(trailing.pose.dy - leading.pose.dy) < 1e-8)
+        #expect(abs(trailing.pose.angle - leading.pose.angle) < 1e-8)
+        #expect(abs(trailing.pose.scale - leading.pose.scale) < 1e-8)
+        #expect(trailing.zIndex == leading.zIndex)
+        #expect(leading.zIndex < foreground.zIndex)
+    }
+
+    @Test func stackAndLargerFansKeepTheirExistingPoses() {
+        for (count, collapsed) in [(1, false), (2, true), (3, true), (4, true), (5, false), (15, false)] {
+            for position in stride(from: -3.5 as CGFloat, through: 3.5, by: 0.5) {
+                let pose = CarouselGeometry.pose(at: position, collapsed: collapsed)
+                let presentation = CarouselGeometry.presentation(at: position, collapsed: collapsed, cardCount: count)
+                #expect(presentation?.pose.transform(width: 100, height: 160) == pose?.transform(width: 100, height: 160))
+                #expect(presentation?.zIndex == pose.map { _ in -Int(abs(position).rounded()) })
+            }
+        }
+    }
+
     @Test func hidesDistantCardsAndBoundsLayoutWork() {
         #expect(CarouselGeometry.pose(at: 3.01, collapsed: false) == nil)
         #expect(CarouselGeometry.pose(at: -3.01, collapsed: true) == nil)

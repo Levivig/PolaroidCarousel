@@ -58,6 +58,31 @@ struct CarouselGeometry {
         )
     }
 
+    static func presentation(at position: CGFloat, collapsed: Bool, cardCount: Int)
+        -> (pose: Pose, zIndex: Int)? {
+        guard !collapsed, (2...4).contains(cardCount) else {
+            guard let pose = pose(at: position, collapsed: collapsed) else { return nil }
+            return (pose, -Int(abs(position).rounded()))
+        }
+
+        // Use one full cycle of the virtual track. Bias even decks towards the right
+        // so the extra card has a stable side and doesn't switch sides at rest.
+        let even = cardCount.isMultiple(of: 2)
+        let upper = CGFloat(cardCount) / 2 + (even ? 0.25 : 0)
+        let lower = upper - CGFloat(cardCount)
+        guard position >= lower, position < upper,
+              let fan = pose(at: position, collapsed: false) else { return nil }
+
+        // Both ends meet at the same pose behind the deck, so changing which
+        // virtual cell represents the card doesn't move it across the screen.
+        let edgeDistance = min(position - lower, upper - position)
+        let progress = 1 - min(edgeDistance / (even ? 0.25 : 0.5), 1)
+        let blend = progress * progress * (3 - 2 * progress)
+        let tucked = Pose(0, 0.42, -position, 0)
+        let depth = abs(position) + (3 - abs(position)) * blend
+        return (fan.interpolated(to: tucked, at: blend), -Int((depth * 1_000).rounded()))
+    }
+
     private static let fan: [Pose] = [
         .init(1.6, 0.58, 2.630, -0.056),
         .init(-8, 0.73, 1.628, -0.054),

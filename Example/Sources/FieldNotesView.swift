@@ -4,12 +4,23 @@ import SwiftUI
 struct FieldNotesView: View {
     @State private var selection = 0
     @State private var isCollapsed = false
-    private let cards = Postcard.deck
+    @State private var cardCount = Postcard.deck.count
 
     var body: some View {
+        let cards = Array(Postcard.deck.prefix(cardCount))
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 header
+
+                Menu {
+                    Picker("Deck size", selection: Binding(get: { cardCount }, set: setCardCount)) {
+                        ForEach(0...Postcard.deck.count, id: \.self) { count in
+                            Text("\(count)").tag(count)
+                        }
+                    }
+                } label: {
+                    Label("Deck size: \(cardCount)", systemImage: "rectangle.on.rectangle")
+                }
 
                 PolaroidCarousel(items: cards, selection: $selection, isCollapsed: isCollapsed,
                                  accessibilityTitle: \.title) { card in
@@ -22,8 +33,9 @@ struct FieldNotesView: View {
                 .background(Color.primary.opacity(0.045), in: .rect(cornerRadius: 24))
                 .clipShape(.rect(cornerRadius: 24))
 
-                DeckControls(card: cards[selection], index: selection, count: cards.count,
-                             isCollapsed: $isCollapsed, previous: previous, next: next)
+                DeckControls(card: cards.indices.contains(selection) ? cards[selection] : nil,
+                             index: selection, count: cards.count, isCollapsed: $isCollapsed,
+                             previous: { moveSelection(by: -1) }, next: { moveSelection(by: 1) })
             }
             .frame(maxWidth: 460)
             .padding(.horizontal, 18)
@@ -50,8 +62,15 @@ struct FieldNotesView: View {
         }
     }
 
-    private func previous() { selection = (selection + cards.count - 1) % cards.count }
-    private func next() { selection = (selection + 1) % cards.count }
+    private func setCardCount(_ count: Int) {
+        selection = min(selection, max(0, count - 1))
+        cardCount = count
+    }
+
+    private func moveSelection(by delta: Int) {
+        guard cardCount > 1 else { return }
+        selection = (selection + delta + cardCount) % cardCount
+    }
 }
 
 #Preview {

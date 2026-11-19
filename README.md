@@ -1,10 +1,10 @@
 # PolaroidCarousel
 
-A dependency-free iOS 16+ carousel with an overlapping deck, continuous scroll transforms, and snapping. The layout and scrolling are UIKit; a `UIViewRepresentable` hosts SwiftUI card content through `UIHostingConfiguration`, which requires iOS 16. Requires Swift 6.2 or later (Xcode 26 or later).
+A dependency-free iOS 16+ carousel with an overlapping deck, continuous scroll transforms, and snapping. Fan mode shows each card once in decks of two to four cards, while still wrapping in both directions. The layout and scrolling are UIKit; a `UIViewRepresentable` hosts SwiftUI card content through `UIHostingConfiguration`, which requires iOS 16. Requires Swift 6.2 or later (Xcode 26 or later).
 
 ## Try the demo
 
-Open [Example/PolaroidDemo.xcodeproj](Example/PolaroidDemo.xcodeproj), choose the **PolaroidDemo** scheme and an iPhone simulator, then run. **Field Notes** shows 15 original illustrated postcards. Swipe the deck, tap a postcard to flip it open and read its note, use the arrow buttons to select programmatically, or switch between **Fan** and **Stack**. The demo uses the same public SwiftUI API shown below.
+Open [Example/PolaroidDemo.xcodeproj](Example/PolaroidDemo.xcodeproj), choose the **PolaroidDemo** scheme and an iPhone simulator, then run. **Field Notes** shows 15 original illustrated postcards. Use **Deck size** to try any count from 0 to 15 without restarting, then swipe in either direction to test wrapping. With two to four cards, **Fan** shows each postcard only once. Tap a postcard to flip it open and read its note, use the arrow buttons to select programmatically, or switch between **Fan** and **Stack**. The demo uses the same public SwiftUI API shown below.
 
 On launch, the first card appears over the stack, then the cards fan out with a subtle spring. On supported iPhones, a light selection tick marks each new card as a swipe crosses it. Launch the app afresh to replay the entrance.
 

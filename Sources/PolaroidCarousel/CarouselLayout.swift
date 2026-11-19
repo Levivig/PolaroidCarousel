@@ -2,7 +2,9 @@
 import UIKit
 
 final class CarouselLayout: UICollectionViewLayout {
-    var itemCount = 0
+    var deck = CarouselDeck(count: 0)
+    private var itemCount: Int { deck.virtualCount }
+
     var isCollapsed = false {
         didSet { if oldValue != isCollapsed { invalidateLayout() } }
     }
@@ -49,9 +51,9 @@ final class CarouselLayout: UICollectionViewLayout {
         attributes.size = CGSize(width: geometry.step, height: geometry.size.height)
         attributes.center = CGPoint(x: (CGFloat(item) + 0.5) * geometry.step, y: geometry.size.height / 2)
         let position = geometry.position(of: item, atOffset: offset)
-        attributes.zIndex = itemCount / 2 - Int(abs(position).rounded())
-        if let pose = CarouselGeometry.pose(at: position, collapsed: isCollapsed) {
-            attributes.transform = pose.transform(width: geometry.step, height: geometry.size.height)
+        if let presentation = CarouselGeometry.presentation(at: position, collapsed: isCollapsed, cardCount: deck.count) {
+            attributes.zIndex = itemCount / 2 + presentation.zIndex
+            attributes.transform = presentation.pose.transform(width: geometry.step, height: geometry.size.height)
         } else {
             attributes.isHidden = true
         }
