@@ -85,7 +85,7 @@ public final class PolaroidCarouselView: UIView {
         deck = CarouselDeck(count: count)
         self.selectedIndex = deck.clampedSelection(selectedIndex)
         needsInitialPosition = true
-        carouselLayout.itemCount = deck.virtualCount
+        carouselLayout.deck = deck
         collectionView.reloadData()
         carouselLayout.invalidateLayout()
         updateAccessibility()
