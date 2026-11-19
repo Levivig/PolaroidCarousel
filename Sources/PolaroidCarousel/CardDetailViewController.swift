@@ -3,37 +3,48 @@ import UIKit
 
 final class CardDetailViewController: UIViewController {
     struct Source {
-        let snapshot: UIView
+        private static let overflowPadding: CGFloat = 32
+        let face: UIView
         let size: CGSize
         let origin: CardHandoffGeometry
 
         @MainActor init?(card: UIView, in window: UIWindow) {
-            guard let origin = Self.geometry(of: card, in: window),
+            guard let origin = CardHandoffGeometry(card: card, in: window),
                   let snapshot = card.snapshotView(afterScreenUpdates: false) else { return nil }
-            self.size = card.bounds.size
-            self.origin = origin
-            self.snapshot = snapshot
+            let size = card.bounds.size
+            let face = UIView(frame: CGRect(origin: .zero, size: size))
+            let overflow = Self.captureOverflow(of: card, scale: window.traitCollection.displayScale)
+            overflow.center = CGPoint(x: face.bounds.midX, y: face.bounds.midY)
+            face.addSubview(overflow)
             snapshot.transform = .identity
-            snapshot.bounds = CGRect(origin: .zero, size: size)
+            snapshot.frame = face.bounds
+            face.addSubview(snapshot)
+
+            self.face = face
+            self.size = size
+            self.origin = origin
         }
 
-        @MainActor static func geometry(of card: UIView, in window: UIWindow) -> CardHandoffGeometry? {
-            let presentation = card.layer.presentation()
-            let windowPresentation = window.layer.presentation()
-            let bounds = presentation?.bounds ?? card.bounds
-            guard bounds.width > 0, bounds.height > 0 else { return nil }
-            func project(_ point: CGPoint) -> CGPoint {
-                if let presentation, let windowPresentation, presentation.superlayer != nil {
-                    return presentation.convert(point, to: windowPresentation)
-                }
-                return card.convert(point, to: window)
+        @MainActor private static func captureOverflow(of card: UIView, scale: CGFloat) -> UIImageView {
+            // The standard snapshot is bounded by the card. Capture only the pixels outside
+            // it (e.g. the shadow), keeping its original image and text rendering intact.
+            let bounds = card.bounds
+            let capture = bounds.insetBy(dx: -overflowPadding, dy: -overflowPadding)
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = scale
+            let image = UIGraphicsImageRenderer(size: capture.size, format: format).image { renderer in
+                let context = renderer.cgContext
+                context.translateBy(x: -capture.minX, y: -capture.minY)
+                card.layer.render(in: context)
+                context.clear(bounds)
             }
-            return CardHandoffGeometry(
-                center: project(CGPoint(x: bounds.midX, y: bounds.midY)),
-                right: project(CGPoint(x: bounds.maxX, y: bounds.midY)),
-                bottom: project(CGPoint(x: bounds.midX, y: bounds.maxY))
-            )
+            return UIImageView(image: image)
         }
+    }
+
+    struct ReturnTarget {
+        let origin: CardHandoffGeometry
+        let occlusion: CardOcclusionMask?
     }
 
     private enum Phase { case waiting, opening, open, closing }
@@ -44,7 +55,6 @@ final class CardDetailViewController: UIViewController {
     private static let halfTurn: CGFloat = .pi - 0.01
     private static let maximumCardHeight: CGFloat = 370
     private static let fadeDuration = 0.2
-    private static let landingDuration = 0.10
     private var phase = Phase.waiting
     private let backdrop = UIControl()
     private let card = UIView()
@@ -53,14 +63,14 @@ final class CardDetailViewController: UIViewController {
     private let front = UIView()
     private let back: UIView
     private let source: Source?
-    private let returnOrigin: () -> CardHandoffGeometry?
+    private let returnTarget: () -> ReturnTarget?
     private let setSourceHidden: (Bool) -> Void
 
     init(back: any UIContentConfiguration, source: Source?,
-         returnOrigin: @escaping () -> CardHandoffGeometry?, setSourceHidden: @escaping (Bool) -> Void) {
+         returnTarget: @escaping () -> ReturnTarget?, setSourceHidden: @escaping (Bool) -> Void) {
         self.back = back.makeContentView()
         self.source = source
-        self.returnOrigin = returnOrigin
+        self.returnTarget = returnTarget
         self.setSourceHidden = setSourceHidden
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
@@ -68,7 +78,7 @@ final class CardDetailViewController: UIViewController {
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError("Use init(back:source:returnOrigin:setSourceHidden:)") }
+    required init?(coder: NSCoder) { fatalError("Use init(back:source:returnTarget:setSourceHidden:)") }
 
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
 
@@ -88,7 +98,7 @@ final class CardDetailViewController: UIViewController {
         pin(faces, in: card)
         pin(front, in: faces)
         pin(back, in: faces)
-        if let source { front.addSubview(source.snapshot) }
+        if let source { front.addSubview(source.face) }
         front.layer.isDoubleSided = false
         back.layer.isDoubleSided = false
         showBack(false)
@@ -157,16 +167,35 @@ final class CardDetailViewController: UIViewController {
         card.center = CGPoint(x: room.midX, y: room.midY)
         if let source {
             // Scale captured pixels, never re-layout the front at the detail size.
-            source.snapshot.center = CGPoint(x: size.width / 2, y: size.height / 2)
-            source.snapshot.transform = CGAffineTransform(scaleX: size.width / source.size.width,
-                                                           y: size.height / source.size.height)
+            source.face.center = CGPoint(x: size.width / 2, y: size.height / 2)
+            source.face.transform = CGAffineTransform(scaleX: size.width / source.size.width,
+                                                       y: size.height / source.size.height)
         }
     }
 
-    private func placeCard(at origin: CardHandoffGeometry) {
-        let local = origin.converted { view.convert($0, from: view.window) }
-        card.center = local.center
-        card.transform = local.transform(from: card.bounds.size)
+    private func place(_ flyingView: UIView, at origin: CardHandoffGeometry) {
+        guard let container = flyingView.superview else { return }
+        let local = origin.converted { container.convert($0, from: view.window) }
+        flyingView.center = local.center
+        flyingView.transform = local.transform(from: flyingView.bounds.size)
+    }
+
+    private func makeMaskedFront(using occlusion: CardOcclusionMask) -> UIView? {
+        guard let window = view.window else { return nil }
+        // Only the returning front belongs under the deck's foreground. The back still turns above it.
+        let overlay = UIView(frame: view.bounds)
+        overlay.isUserInteractionEnabled = false
+        view.insertSubview(overlay, aboveSubview: backdrop)
+
+        let flight = UIView()
+        flight.bounds = card.bounds
+        flight.center = overlay.convert(card.center, from: view)
+        flight.transform = card.transform
+        overlay.addSubview(flight)
+        pin(front, in: flight)
+        flight.layoutIfNeeded()
+        occlusion.apply(to: overlay, in: window)
+        return flight
     }
 
     private func showBack(_ isShowingBack: Bool) {
@@ -186,7 +215,7 @@ final class CardDetailViewController: UIViewController {
         let expandedCenter = card.center
         let origin = UIAccessibility.isReduceMotionEnabled ? nil : source?.origin
         if let origin {
-            placeCard(at: origin)
+            place(card, at: origin)
         } else {
             showBack(true)
             card.alpha = 0
@@ -228,30 +257,37 @@ final class CardDetailViewController: UIViewController {
         phase = .closing
         card.isUserInteractionEnabled = false
         view.accessibilityElementsHidden = true
-        let origin = UIAccessibility.isReduceMotionEnabled || source == nil ? nil : returnOrigin()
+        let target = UIAccessibility.isReduceMotionEnabled || source == nil ? nil : returnTarget()
+        let maskedFront = target?.occlusion.flatMap { makeMaskedFront(using: $0) }
         let move = {
             self.backdrop.alpha = 0
             self.closeButton.alpha = 0
-            if let origin { self.placeCard(at: origin) } else { self.card.alpha = 0 }
+            if let target {
+                self.place(self.card, at: target.origin)
+                if let maskedFront { self.place(maskedFront, at: target.origin) }
+            } else {
+                self.card.alpha = 0
+            }
         }
         let finish: () -> Void = {
             self.dismiss(animated: false) {
                 UIAccessibility.post(notification: .screenChanged, argument: nil)
             }
         }
-        if origin != nil {
+        if target != nil {
             front.isHidden = false
             let animator = UIViewPropertyAnimator(duration: Self.flipDuration, dampingRatio: Self.dampingRatio) {
                 self.showBack(false)
                 move()
             }
             animator.addCompletion { _ in
-                // The pixels already align. Dissolve the overlay into the real stacking order
-                // so a neighboring card that overlaps the source doesn't pop in on dismissal.
-                self.setSourceHidden(false)
-                UIView.animate(withDuration: Self.landingDuration) {
-                    self.card.alpha = 0
-                } completion: { _ in finish() }
+                // The foreground already covers the flying copy. Both card and shadow swap at once.
+                UIView.performWithoutAnimation {
+                    self.setSourceHidden(false)
+                    self.card.isHidden = true
+                    maskedFront?.isHidden = true
+                }
+                finish()
             }
             animator.startAnimation()
         } else {

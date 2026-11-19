@@ -19,3 +19,25 @@ struct CardHandoffGeometry {
                           tx: 0, ty: 0)
     }
 }
+
+#if canImport(UIKit)
+import UIKit
+
+extension CardHandoffGeometry {
+    @MainActor init?(card: UIView, in window: UIWindow) {
+        let presentation = card.layer.presentation()
+        let windowPresentation = window.layer.presentation()
+        let bounds = presentation?.bounds ?? card.bounds
+        guard bounds.width > 0, bounds.height > 0 else { return nil }
+        func project(_ point: CGPoint) -> CGPoint {
+            if let presentation, let windowPresentation, presentation.superlayer != nil {
+                return presentation.convert(point, to: windowPresentation)
+            }
+            return card.convert(point, to: window)
+        }
+        self.init(center: project(CGPoint(x: bounds.midX, y: bounds.midY)),
+                  right: project(CGPoint(x: bounds.maxX, y: bounds.midY)),
+                  bottom: project(CGPoint(x: bounds.midX, y: bounds.maxY)))
+    }
+}
+#endif

@@ -192,11 +192,13 @@ public final class PolaroidCarouselView: UIView {
         let index = deck.logicalIndex(at: indexPath.item)
         let detail = CardDetailViewController(
             back: backConfigurationForCard(index), source: source,
-            returnOrigin: { [weak self, weak sourceView, sourceSize = source?.size] in
+            returnTarget: { [weak self, weak sourceView, sourceSize = source?.size] in
                 guard let self, let window = self.window, let sourceView,
                       detailSourceView(for: indexPath) === sourceView,
-                      sourceView.bounds.size == sourceSize else { return nil }
-                return CardDetailViewController.Source.geometry(of: sourceView, in: window)
+                      sourceView.bounds.size == sourceSize,
+                      let origin = CardHandoffGeometry(card: sourceView, in: window) else { return nil }
+                let occlusion = CardOcclusionMask(foreground: cardsAbove(at: indexPath), in: window)
+                return CardDetailViewController.ReturnTarget(origin: origin, occlusion: occlusion)
             },
             setSourceHidden: { [weak self] hidden in
                 guard let self, detailSource == indexPath else { return }
@@ -215,6 +217,27 @@ public final class PolaroidCarouselView: UIView {
               let card = collectionView.cellForItem(at: indexPath)?.contentView,
               card.window === window else { return nil }
         return card
+    }
+
+    private func cardsAbove(at indexPath: IndexPath) -> [UIView] {
+        guard let cell = collectionView.cellForItem(at: indexPath),
+              let zIndex = collectionView.layoutAttributesForItem(at: indexPath)?.zIndex else { return [] }
+        let padding = CardOcclusionMask.padding
+        let bounds = cell.convert(cell.bounds.insetBy(dx: -padding, dy: -padding), to: collectionView)
+        return collectionView.visibleCells.filter { other in
+            guard other !== cell, !other.isHidden, other.alpha > 0,
+                  let otherIndex = collectionView.indexPath(for: other),
+                  let otherZIndex = collectionView.layoutAttributesForItem(at: otherIndex)?.zIndex,
+                  otherZIndex >= zIndex,
+                  bounds.intersects(other.convert(other.bounds.insetBy(dx: -padding, dy: -padding),
+                                                  to: collectionView)) else { return false }
+            if otherZIndex > zIndex { return true }
+            // Equal z-indices are drawn in subview order.
+            guard let parent = cell.superview, other.superview === parent,
+                  let cellOrder = parent.subviews.firstIndex(of: cell),
+                  let otherOrder = parent.subviews.firstIndex(of: other) else { return false }
+            return otherOrder > cellOrder
+        }
     }
 
     private func updateDetailSourceVisibility(hidden: Bool) {
