@@ -14,7 +14,15 @@ struct Postcard: Equatable {
 
     static let deck = [
         Self(title: "Juniper Ridge", subtitle: "01 · An alpine morning",
-             note: "The ridge was quiet before the sun cleared the saddle. We stopped for coffee where the junipers gave way to loose stone.",
+             note: """
+             The ridge was quiet before the sun cleared the saddle. We stopped for coffee where the junipers gave way to loose stone. The wind kept lifting the corner of my map, so I held it down with a pebble.
+
+             Farther up, the trail crossed a bank of old snow. The footprints from yesterday had frozen into little cups. We followed them one at a time, then emptied the gravel out of our boots on the other side.
+
+             By midmorning the clouds had dropped below us. A single peak stuck out across the valley, and for a while we could hear a creek we couldn't see. We split the last orange and watched the clouds pull apart.
+
+             On the way down, we found the pebble still sitting where we'd stopped for coffee. I left it there for the next person with a map.
+             """,
              sky: Color(red: 0.32, green: 0.57, blue: 0.62), horizon: Color(red: 0.77, green: 0.86, blue: 0.79),
              sun: Color(red: 1, green: 0.88, blue: 0.62), land: Color(red: 0.15, green: 0.36, blue: 0.33),
              ridge: Color(red: 0.29, green: 0.51, blue: 0.45), sunX: 0.72, peaks: [0.59, 0.32, 0.56, 0.42, 0.59]),

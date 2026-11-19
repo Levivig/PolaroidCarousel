@@ -17,7 +17,7 @@ struct FieldNotesView: View {
                 } back: { card in
                     PostcardBackView(postcard: card)
                 }
-                .frame(height: 292)
+                .frame(height: 280)
                 .padding(.vertical, 14)
                 .background(Color.primary.opacity(0.045), in: .rect(cornerRadius: 24))
                 .clipShape(.rect(cornerRadius: 24))
