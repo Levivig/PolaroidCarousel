@@ -44,7 +44,7 @@ final class CardDetailViewController: UIViewController {
 
     struct ReturnTarget {
         let origin: CardHandoffGeometry
-        let occlusion: CardOcclusionMask?
+        let cell: CarouselCell
     }
 
     private enum Phase { case waiting, opening, open, closing }
@@ -56,6 +56,7 @@ final class CardDetailViewController: UIViewController {
     private static let maximumCardHeight: CGFloat = 370
     private static let fadeDuration = 0.2
     private var phase = Phase.waiting
+    private weak var returningFront: UIView?
     private let backdrop = UIControl()
     private let card = UIView()
     private let faces = UIView()
@@ -138,7 +139,10 @@ final class CardDetailViewController: UIViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        if isBeingDismissed || presentingViewController == nil { setSourceHidden(false) }
+        if isBeingDismissed || presentingViewController == nil {
+            returningFront?.removeFromSuperview()
+            setSourceHidden(false)
+        }
     }
 
     override func accessibilityPerformEscape() -> Bool {
@@ -180,21 +184,18 @@ final class CardDetailViewController: UIViewController {
         flyingView.transform = local.transform(from: flyingView.bounds.size)
     }
 
-    private func makeMaskedFront(using occlusion: CardOcclusionMask) -> UIView? {
-        guard let window = view.window else { return nil }
-        // Only the returning front belongs under the deck's foreground. The back still turns above it.
-        let overlay = UIView(frame: view.bounds)
-        overlay.isUserInteractionEnabled = false
-        view.insertSubview(overlay, aboveSubview: backdrop)
-
+    private func attachReturningFront(to cell: CarouselCell) -> UIView? {
+        guard let window = view.window, let expanded = CardHandoffGeometry(card: card, in: window) else { return nil }
+        // The front turns into the real deck hierarchy, so live cards above it cast their
+        // shadows on it during the spring. The back still turns in the detail overlay.
         let flight = UIView()
+        flight.isUserInteractionEnabled = false
         flight.bounds = card.bounds
-        flight.center = overlay.convert(card.center, from: view)
-        flight.transform = card.transform
-        overlay.addSubview(flight)
+        cell.attachReturningFront(flight)
+        place(flight, at: expanded)
         pin(front, in: flight)
         flight.layoutIfNeeded()
-        occlusion.apply(to: overlay, in: window)
+        returningFront = flight
         return flight
     }
 
@@ -258,13 +259,13 @@ final class CardDetailViewController: UIViewController {
         card.isUserInteractionEnabled = false
         view.accessibilityElementsHidden = true
         let target = UIAccessibility.isReduceMotionEnabled || source == nil ? nil : returnTarget()
-        let maskedFront = target?.occlusion.flatMap { makeMaskedFront(using: $0) }
+        let flight = target.flatMap { attachReturningFront(to: $0.cell) }
         let move = {
             self.backdrop.alpha = 0
             self.closeButton.alpha = 0
             if let target {
                 self.place(self.card, at: target.origin)
-                if let maskedFront { self.place(maskedFront, at: target.origin) }
+                if let flight { self.place(flight, at: target.origin) }
             } else {
                 self.card.alpha = 0
             }
@@ -285,7 +286,7 @@ final class CardDetailViewController: UIViewController {
                 UIView.performWithoutAnimation {
                     self.setSourceHidden(false)
                     self.card.isHidden = true
-                    maskedFront?.isHidden = true
+                    flight?.removeFromSuperview()
                 }
                 finish()
             }

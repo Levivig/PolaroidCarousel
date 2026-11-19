@@ -57,7 +57,7 @@ public final class PolaroidCarouselView: UIView {
         self.cardConfiguration = cardConfiguration
         super.init(frame: .zero)
 
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: Self.cellID)
+        collectionView.register(CarouselCell.self, forCellWithReuseIdentifier: Self.cellID)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .clear
@@ -185,7 +185,7 @@ public final class PolaroidCarouselView: UIView {
 
         detailSource = indexPath
         // Capture the actual card at its carousel layout size, before settling an in-flight entrance.
-        let sourceView = detailSourceView(for: indexPath)
+        let sourceView = detailSourceCell(for: indexPath)?.contentView
         let source = sourceView.flatMap { CardDetailViewController.Source(card: $0, in: window) }
         stopEntrance()
         lastFeedbackItem = nil
@@ -194,11 +194,10 @@ public final class PolaroidCarouselView: UIView {
             back: backConfigurationForCard(index), source: source,
             returnTarget: { [weak self, weak sourceView, sourceSize = source?.size] in
                 guard let self, let window = self.window, let sourceView,
-                      detailSourceView(for: indexPath) === sourceView,
+                      let cell = detailSourceCell(for: indexPath), cell.contentView === sourceView,
                       sourceView.bounds.size == sourceSize,
                       let origin = CardHandoffGeometry(card: sourceView, in: window) else { return nil }
-                let occlusion = CardOcclusionMask(foreground: cardsAbove(at: indexPath), in: window)
-                return CardDetailViewController.ReturnTarget(origin: origin, occlusion: occlusion)
+                return CardDetailViewController.ReturnTarget(origin: origin, cell: cell)
             },
             setSourceHidden: { [weak self] hidden in
                 guard let self, detailSource == indexPath else { return }
@@ -211,33 +210,12 @@ public final class PolaroidCarouselView: UIView {
         return true
     }
 
-    private func detailSourceView(for indexPath: IndexPath) -> UIView? {
+    private func detailSourceCell(for indexPath: IndexPath) -> CarouselCell? {
         guard detailSource == indexPath, let window,
               collectionView.indexPathsForVisibleItems.contains(indexPath),
-              let card = collectionView.cellForItem(at: indexPath)?.contentView,
-              card.window === window else { return nil }
-        return card
-    }
-
-    private func cardsAbove(at indexPath: IndexPath) -> [UIView] {
-        guard let cell = collectionView.cellForItem(at: indexPath),
-              let zIndex = collectionView.layoutAttributesForItem(at: indexPath)?.zIndex else { return [] }
-        let padding = CardOcclusionMask.padding
-        let bounds = cell.convert(cell.bounds.insetBy(dx: -padding, dy: -padding), to: collectionView)
-        return collectionView.visibleCells.filter { other in
-            guard other !== cell, !other.isHidden, other.alpha > 0,
-                  let otherIndex = collectionView.indexPath(for: other),
-                  let otherZIndex = collectionView.layoutAttributesForItem(at: otherIndex)?.zIndex,
-                  otherZIndex >= zIndex,
-                  bounds.intersects(other.convert(other.bounds.insetBy(dx: -padding, dy: -padding),
-                                                  to: collectionView)) else { return false }
-            if otherZIndex > zIndex { return true }
-            // Equal z-indices are drawn in subview order.
-            guard let parent = cell.superview, other.superview === parent,
-                  let cellOrder = parent.subviews.firstIndex(of: cell),
-                  let otherOrder = parent.subviews.firstIndex(of: other) else { return false }
-            return otherOrder > cellOrder
-        }
+              let cell = collectionView.cellForItem(at: indexPath) as? CarouselCell,
+              cell.window === window else { return nil }
+        return cell
     }
 
     private func updateDetailSourceVisibility(hidden: Bool) {

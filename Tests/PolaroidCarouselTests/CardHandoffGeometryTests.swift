@@ -19,6 +19,25 @@ struct CardHandoffGeometryTests {
         #expect(abs(bottom.y + local.center.y - local.bottom.y) < 1e-9)
     }
 
+    @Test func keepsTheExpandedPoseWhenMovingTheFrontIntoARotatedCell() {
+        let size = CGSize(width: 231.25, height: 370)
+        let center = CGPoint(x: 195, y: 447)
+        let expanded = CardHandoffGeometry(center: center,
+                                           right: CGPoint(x: center.x + size.width / 2, y: center.y),
+                                           bottom: CGPoint(x: center.x, y: center.y + size.height / 2))
+        let cellToWindow = CGAffineTransform(rotationAngle: 0.37).scaledBy(x: 0.73, y: 0.73)
+            .concatenating(CGAffineTransform(translationX: 274, y: 305))
+        let windowToCell = cellToWindow.inverted()
+        let local = expanded.converted { $0.applying(windowToCell) }
+        let transform = local.transform(from: size)
+            .concatenating(CGAffineTransform(translationX: local.center.x, y: local.center.y))
+            .concatenating(cellToWindow)
+
+        let topLeft = CGPoint(x: -size.width / 2, y: -size.height / 2).applying(transform)
+        #expect(abs(topLeft.x - (center.x - size.width / 2)) < 1e-9)
+        #expect(abs(topLeft.y - (center.y - size.height / 2)) < 1e-9)
+    }
+
     @Test func preservesAFrontDetailAtItsOriginalPositionAfterScalingDown() {
         let sourceSize = CGSize(width: 182.5, height: 292)
         let expandedSize = CGSize(width: 231.25, height: 370)
