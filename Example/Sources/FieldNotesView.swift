@@ -14,6 +14,8 @@ struct FieldNotesView: View {
                 PolaroidCarousel(items: cards, selection: $selection, isCollapsed: isCollapsed,
                                  accessibilityTitle: \.title) { card in
                     PostcardView(postcard: card)
+                } back: { card in
+                    PostcardBackView(postcard: card)
                 }
                 .frame(height: 292)
                 .padding(.vertical, 14)
@@ -43,7 +45,7 @@ struct FieldNotesView: View {
                 .font(.largeTitle.weight(.bold))
                 .fontDesign(.serif)
                 .accessibilityAddTraits(.isHeader)
-            Text("Swipe or tap a card to explore the deck.")
+            Text("Swipe the deck. Tap a card to read the note on the back.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }

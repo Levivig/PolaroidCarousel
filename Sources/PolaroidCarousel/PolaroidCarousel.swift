@@ -3,7 +3,8 @@ import SwiftUI
 import UIKit
 
 /// SwiftUI bridge for the UIKit carousel. `selection` is a logical index, not a virtual page.
-/// Give the carousel an explicit height. Cards should be visual-only; use `onCardTap` for actions.
+/// Give the carousel an explicit height. Use the `back` builder for flip-to-open cards,
+/// or `onCardTap` to handle taps yourself.
 @MainActor
 public struct PolaroidCarousel<Item: Equatable, Card: View>: UIViewRepresentable {
     private let items: [Item]
@@ -14,6 +15,7 @@ public struct PolaroidCarousel<Item: Equatable, Card: View>: UIViewRepresentable
     private let accessibilityTitle: ((Item) -> String)?
     private let onCardTap: ((Item) -> Void)?
     private let card: (Item) -> Card
+    private var backConfiguration: ((Item) -> any UIContentConfiguration)?
 
     public init(items: [Item], selection: Binding<Int>, isCollapsed: Bool = false,
                 animatesEntrance: Bool = true, isHapticFeedbackEnabled: Bool = true,
@@ -28,6 +30,18 @@ public struct PolaroidCarousel<Item: Equatable, Card: View>: UIViewRepresentable
         self.accessibilityTitle = accessibilityTitle
         self.onCardTap = onCardTap
         self.card = card
+    }
+
+    /// Shows the supplied back in a full-screen card detail when tapped.
+    public init<Back: View>(items: [Item], selection: Binding<Int>, isCollapsed: Bool = false,
+                            animatesEntrance: Bool = true, isHapticFeedbackEnabled: Bool = true,
+                            accessibilityTitle: ((Item) -> String)? = nil,
+                            @ViewBuilder card: @escaping (Item) -> Card,
+                            @ViewBuilder back: @escaping (Item) -> Back) {
+        self.init(items: items, selection: selection, isCollapsed: isCollapsed,
+                  animatesEntrance: animatesEntrance, isHapticFeedbackEnabled: isHapticFeedbackEnabled,
+                  accessibilityTitle: accessibilityTitle, card: card)
+        backConfiguration = { item in UIHostingConfiguration { back(item) }.margins(.all, 0) }
     }
 
     public func makeCoordinator() -> Coordinator { Coordinator(source: self) }
@@ -47,7 +61,7 @@ public struct PolaroidCarousel<Item: Equatable, Card: View>: UIViewRepresentable
         view.onSelectionChange = { [weak coordinator] index in
             coordinator?.source.selection = index
         }
-        applyOptions(to: view)
+        applyOptions(to: view, coordinator: coordinator)
         view.reloadCards(count: items.count, selectedIndex: selection)
         return view
     }
@@ -62,7 +76,7 @@ public struct PolaroidCarousel<Item: Equatable, Card: View>: UIViewRepresentable
                 source.onCardTap?(source.items[index])
             }
         }
-        applyOptions(to: view)
+        applyOptions(to: view, coordinator: coordinator)
         if itemsChanged {
             view.reloadCards(count: items.count, selectedIndex: selection)
         } else {
@@ -70,7 +84,16 @@ public struct PolaroidCarousel<Item: Equatable, Card: View>: UIViewRepresentable
         }
     }
 
-    private func applyOptions(to view: PolaroidCarouselView) {
+    private func applyOptions(to view: PolaroidCarouselView, coordinator: Coordinator) {
+        view.backConfigurationForCard = backConfiguration.map { _ in
+            { [weak coordinator] index in
+                guard let source = coordinator?.source, let configuration = source.backConfiguration,
+                      source.items.indices.contains(index) else {
+                    return UIHostingConfiguration { EmptyView() }.margins(.all, 0)
+                }
+                return configuration(source.items[index])
+            }
+        }
         view.animatesEntrance = animatesEntrance
         view.isHapticFeedbackEnabled = isHapticFeedbackEnabled
         view.isCollapsed = isCollapsed

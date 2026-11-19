@@ -12,10 +12,12 @@
 		443D657DDE3B970A54B1A7F4 /* Postcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB952E7E8C8F2827531125E /* Postcard.swift */; };
 		4AFA10AF121C8839530C5A34 /* DeckControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF6BABBA5473089A22F3D72 /* DeckControls.swift */; };
 		6D3F3A4E5FC4D6853A674FAF /* PolaroidDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CA720D838DAB77DDE1461E2 /* PolaroidDemoApp.swift */; };
+		95AE20C67F75D3A03F85C4B9 /* PostcardBackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25ECAACA6C68CF14AB0B65AC /* PostcardBackView.swift */; };
 		F3AE24559DC6AC23C8628A56 /* FieldNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F923B419FDFE323A7A94BC /* FieldNotesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		25ECAACA6C68CF14AB0B65AC /* PostcardBackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostcardBackView.swift; sourceTree = "<group>"; };
 		2BF6BABBA5473089A22F3D72 /* DeckControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckControls.swift; sourceTree = "<group>"; };
 		55F923B419FDFE323A7A94BC /* FieldNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldNotesView.swift; sourceTree = "<group>"; };
 		60D2222119C9BDBD54FD5BFA /* PolaroidCarousel */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PolaroidCarousel; path = ..; sourceTree = SOURCE_ROOT; };
@@ -44,6 +46,7 @@
 				55F923B419FDFE323A7A94BC /* FieldNotesView.swift */,
 				8CA720D838DAB77DDE1461E2 /* PolaroidDemoApp.swift */,
 				7BB952E7E8C8F2827531125E /* Postcard.swift */,
+				25ECAACA6C68CF14AB0B65AC /* PostcardBackView.swift */,
 				DD09BA1ABE83EE2958C70E4F /* PostcardView.swift */,
 			);
 			path = Sources;
@@ -136,6 +139,7 @@
 				F3AE24559DC6AC23C8628A56 /* FieldNotesView.swift in Sources */,
 				6D3F3A4E5FC4D6853A674FAF /* PolaroidDemoApp.swift in Sources */,
 				443D657DDE3B970A54B1A7F4 /* Postcard.swift in Sources */,
+				95AE20C67F75D3A03F85C4B9 /* PostcardBackView.swift in Sources */,
 				3A6DA9149094B3D32C63D32B /* PostcardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

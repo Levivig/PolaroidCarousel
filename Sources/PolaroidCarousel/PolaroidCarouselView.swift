@@ -13,14 +13,21 @@ public final class PolaroidCarouselView: UIView {
     private var entranceAnimator: UIViewPropertyAnimator?
     private lazy var selectionFeedback = UISelectionFeedbackGenerator()
     private var lastFeedbackItem: Int?
+    private weak var activeDetail: CardDetailViewController?
+    private var detailSource: IndexPath?
+    private var hiddenDetailSource: IndexPath?
     private static let cellID = "PolaroidCard"
 
     public private(set) var selectedIndex: Int?
 
     /// Called after a user-driven selection change. Programmatic selection does not call it.
     public var onSelectionChange: ((Int) -> Void)?
-    /// Called when a card is tapped or the currently selected card is activated with VoiceOver.
+    /// Called on tap or VoiceOver activation when no built-in detail is presented.
     public var onCardTap: ((Int) -> Void)? {
+        didSet { updateAccessibilityTraits() }
+    }
+    /// Supply a back configuration to open a two-sided detail card on tap.
+    public var backConfigurationForCard: ((Int) -> any UIContentConfiguration)? {
         didSet { updateAccessibilityTraits() }
     }
     /// Supplies the name announced for the centered card. The ordinal is added automatically.
@@ -45,7 +52,7 @@ public final class PolaroidCarouselView: UIView {
     public var isHapticFeedbackEnabled = true
 
     /// The provider receives logical (zero-based) indexes, never virtual indexes.
-    /// Use visual content here and handle card actions via `onCardTap`.
+    /// Use visual content here and handle card actions via `backConfigurationForCard` or `onCardTap`.
     public init(cardConfiguration: @escaping (Int) -> any UIContentConfiguration) {
         self.cardConfiguration = cardConfiguration
         super.init(frame: .zero)
@@ -73,6 +80,8 @@ public final class PolaroidCarouselView: UIView {
     public func reloadCards(count: Int, selectedIndex: Int = 0) {
         stopEntrance()
         lastFeedbackItem = nil
+        updateDetailSourceVisibility(hidden: false)
+        detailSource = nil
         deck = CarouselDeck(count: count)
         self.selectedIndex = deck.clampedSelection(selectedIndex)
         needsInitialPosition = true
@@ -127,6 +136,7 @@ public final class PolaroidCarouselView: UIView {
     public override func accessibilityDecrement() { moveAccessibilitySelection(by: -1) }
 
     public override func accessibilityActivate() -> Bool {
+        if let item = nearestVisibleItem(), openDetail(at: IndexPath(item: item, section: 0)) { return true }
         guard let selectedIndex, let onCardTap else { return false }
         onCardTap(selectedIndex)
         return true
@@ -164,6 +174,53 @@ public final class PolaroidCarouselView: UIView {
         carouselLayout.isCollapsed = isCollapsed
         carouselLayout.invalidateLayout()
         collectionView.layoutIfNeeded()
+    }
+
+    private func openDetail(at indexPath: IndexPath) -> Bool {
+        if activeDetail != nil { return true }
+        guard let backConfigurationForCard, let window, var presenter = window.rootViewController else { return false }
+        while let presented = presenter.presentedViewController { presenter = presented }
+        guard presenter.viewIfLoaded?.window === window, !presenter.isBeingDismissed,
+              !presenter.isBeingPresented else { return false }
+
+        detailSource = indexPath
+        // Capture the actual card at its carousel layout size, before settling an in-flight entrance.
+        let sourceView = detailSourceView(for: indexPath)
+        let source = sourceView.flatMap { CardDetailViewController.Source(card: $0, in: window) }
+        stopEntrance()
+        lastFeedbackItem = nil
+        let index = deck.logicalIndex(at: indexPath.item)
+        let detail = CardDetailViewController(
+            back: backConfigurationForCard(index), source: source,
+            returnOrigin: { [weak self, weak sourceView, sourceSize = source?.size] in
+                guard let self, let window = self.window, let sourceView,
+                      detailSourceView(for: indexPath) === sourceView,
+                      sourceView.bounds.size == sourceSize else { return nil }
+                return CardDetailViewController.Source.geometry(of: sourceView, in: window)
+            },
+            setSourceHidden: { [weak self] hidden in
+                guard let self, detailSource == indexPath else { return }
+                updateDetailSourceVisibility(hidden: hidden)
+                if !hidden { detailSource = nil }
+            }
+        )
+        activeDetail = detail
+        presenter.present(detail, animated: false)
+        return true
+    }
+
+    private func detailSourceView(for indexPath: IndexPath) -> UIView? {
+        guard detailSource == indexPath, let window,
+              collectionView.indexPathsForVisibleItems.contains(indexPath),
+              let card = collectionView.cellForItem(at: indexPath)?.contentView,
+              card.window === window else { return nil }
+        return card
+    }
+
+    private func updateDetailSourceVisibility(hidden: Bool) {
+        guard let detailSource else { return }
+        hiddenDetailSource = hidden ? detailSource : nil
+        collectionView.cellForItem(at: detailSource)?.contentView.alpha = hidden ? 0 : 1
     }
 
     private func center(item: Int, animated: Bool) {
@@ -208,7 +265,7 @@ public final class PolaroidCarouselView: UIView {
         if deck.count > 1 {
             accessibilityTraits = .adjustable
         } else {
-            accessibilityTraits = onCardTap == nil ? .staticText : .button
+            accessibilityTraits = onCardTap != nil || backConfigurationForCard != nil ? .button : .staticText
         }
     }
 
@@ -237,13 +294,15 @@ extension PolaroidCarouselView: UICollectionViewDataSource, UICollectionViewDele
                                cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Self.cellID, for: indexPath)
         cell.contentConfiguration = cardConfiguration(deck.logicalIndex(at: indexPath.item))
+        cell.contentView.alpha = hiddenDetailSource == indexPath ? 0 : 1
         return cell
     }
 
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: false)
+        if openDetail(at: indexPath) { return }
         stopEntrance()
         lastFeedbackItem = nil
-        collectionView.deselectItem(at: indexPath, animated: false)
         let index = deck.logicalIndex(at: indexPath.item)
         center(item: indexPath.item, animated: true)
         publishSelection(index)
