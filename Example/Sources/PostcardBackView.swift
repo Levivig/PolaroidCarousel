@@ -27,8 +27,7 @@ struct PostcardBackView: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(postcard.title)
-                        .font(.title2.weight(.semibold))
-                        .fontDesign(.serif)
+                        .font(.system(.title2, design: .serif).weight(.semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text(postcard.subtitle)
                         .font(.footnote.monospaced())
@@ -40,8 +39,7 @@ struct PostcardBackView: View {
                     .accessibilityHidden(true)
 
                 Text(postcard.note)
-                    .font(.body)
-                    .fontDesign(.serif)
+                    .font(.system(.body, design: .serif))
                     .lineSpacing(4)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

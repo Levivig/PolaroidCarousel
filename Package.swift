@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "PolaroidCarousel",
     defaultLocalization: "en",
-    platforms: [.iOS(.v17), .macOS(.v13)],
+    platforms: [.iOS(.v16), .macOS(.v13)],
     products: [.library(name: "PolaroidCarousel", targets: ["PolaroidCarousel"])],
     targets: [
         .target(name: "PolaroidCarousel", resources: [.process("Resources")]),

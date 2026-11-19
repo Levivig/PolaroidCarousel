@@ -8,8 +8,7 @@ struct PostcardView: View {
             landscape
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             Text(postcard.title)
-                .font(.title3.weight(.semibold))
-                .fontDesign(.serif)
+                .font(.system(.title3, design: .serif).weight(.semibold))
                 .foregroundStyle(Color(red: 0.18, green: 0.20, blue: 0.19))
                 .multilineTextAlignment(.center)
                 .lineLimit(2)

@@ -1,6 +1,6 @@
 # PolaroidCarousel
 
-A dependency-free iOS 17+ carousel with an overlapping deck, continuous scroll transforms, and snapping. The layout and scrolling are UIKit; a `UIViewRepresentable` hosts SwiftUI card content through `UIHostingConfiguration`. Requires Swift 6.2 or later.
+A dependency-free iOS 16+ carousel with an overlapping deck, continuous scroll transforms, and snapping. The layout and scrolling are UIKit; a `UIViewRepresentable` hosts SwiftUI card content through `UIHostingConfiguration`, which requires iOS 16. Requires Swift 6.2 or later (Xcode 26 or later).
 
 ## Try the demo
 
@@ -18,13 +18,13 @@ In Xcode, choose **File → Add Package Dependencies…** and enter the reposito
 git@github.com:Levivig/PolaroidCarousel.git
 ```
 
-Choose **Up to Next Minor Version** starting at `0.1.0`, then add the `PolaroidCarousel` library product to your app target. The repository is private: the GitHub account associated with your SSH key must have read access. CI also needs read access, for example through a read-only deploy key. Check your local access with `git ls-remote git@github.com:Levivig/PolaroidCarousel.git`.
+Choose **Up to Next Minor Version** starting at `0.1.1` (the first version supporting iOS 16), then add the `PolaroidCarousel` library product to your app target. The repository is private: the GitHub account associated with your SSH key must have read access. CI also needs read access, for example through a read-only deploy key. Check your local access with `git ls-remote git@github.com:Levivig/PolaroidCarousel.git`.
 
 If your app uses a `Package.swift`, add the dependency and link its product in your target:
 
 ```swift
 // In the package's dependencies:
-.package(url: "git@github.com:Levivig/PolaroidCarousel.git", .upToNextMinor(from: "0.1.0")),
+.package(url: "git@github.com:Levivig/PolaroidCarousel.git", .upToNextMinor(from: "0.1.1")),
 
 // In the target's dependencies:
 .product(name: "PolaroidCarousel", package: "PolaroidCarousel"),
