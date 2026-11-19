@@ -12,7 +12,25 @@ The Xcode project already points to the local package. To regenerate it after ad
 
 ## Use it in another app
 
-Add this directory as a local Swift package in Xcode and link the `PolaroidCarousel` product. The container sets the card height; the width is always 5/8 of that height.
+In Xcode, choose **File → Add Package Dependencies…** and enter the repository's SSH URL:
+
+```text
+git@github.com:Levivig/PolaroidCarousel.git
+```
+
+Choose **Up to Next Minor Version** starting at `0.1.0`, then add the `PolaroidCarousel` library product to your app target. The repository is private: the GitHub account associated with your SSH key must have read access. CI also needs read access, for example through a read-only deploy key. Check your local access with `git ls-remote git@github.com:Levivig/PolaroidCarousel.git`.
+
+If your app uses a `Package.swift`, add the dependency and link its product in your target:
+
+```swift
+// In the package's dependencies:
+.package(url: "git@github.com:Levivig/PolaroidCarousel.git", .upToNextMinor(from: "0.1.0")),
+
+// In the target's dependencies:
+.product(name: "PolaroidCarousel", package: "PolaroidCarousel"),
+```
+
+To develop against a local checkout instead, use **Add Local…** in Xcode. The carousel's container sets the card height; the width is always 5/8 of that height.
 
 ### SwiftUI
 
