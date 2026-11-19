@@ -1,0 +1,345 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3A6DA9149094B3D32C63D32B /* PostcardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD09BA1ABE83EE2958C70E4F /* PostcardView.swift */; };
+		3E11A6146069D2069B2C8377 /* PolaroidCarousel in Frameworks */ = {isa = PBXBuildFile; productRef = EAD7FE8FE6896B94B10A56F0 /* PolaroidCarousel */; };
+		443D657DDE3B970A54B1A7F4 /* Postcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB952E7E8C8F2827531125E /* Postcard.swift */; };
+		4AFA10AF121C8839530C5A34 /* DeckControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF6BABBA5473089A22F3D72 /* DeckControls.swift */; };
+		6D3F3A4E5FC4D6853A674FAF /* PolaroidDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CA720D838DAB77DDE1461E2 /* PolaroidDemoApp.swift */; };
+		F3AE24559DC6AC23C8628A56 /* FieldNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F923B419FDFE323A7A94BC /* FieldNotesView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2BF6BABBA5473089A22F3D72 /* DeckControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckControls.swift; sourceTree = "<group>"; };
+		55F923B419FDFE323A7A94BC /* FieldNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldNotesView.swift; sourceTree = "<group>"; };
+		60D2222119C9BDBD54FD5BFA /* PolaroidCarousel */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PolaroidCarousel; path = ..; sourceTree = SOURCE_ROOT; };
+		7BB952E7E8C8F2827531125E /* Postcard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Postcard.swift; sourceTree = "<group>"; };
+		8CA720D838DAB77DDE1461E2 /* PolaroidDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolaroidDemoApp.swift; sourceTree = "<group>"; };
+		A31A668979FDD051AB675E22 /* PolaroidDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PolaroidDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD09BA1ABE83EE2958C70E4F /* PostcardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostcardView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5376C9EC4476119536F23615 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3E11A6146069D2069B2C8377 /* PolaroidCarousel in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5912750EB955ACE293ECB382 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				2BF6BABBA5473089A22F3D72 /* DeckControls.swift */,
+				55F923B419FDFE323A7A94BC /* FieldNotesView.swift */,
+				8CA720D838DAB77DDE1461E2 /* PolaroidDemoApp.swift */,
+				7BB952E7E8C8F2827531125E /* Postcard.swift */,
+				DD09BA1ABE83EE2958C70E4F /* PostcardView.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		66BC1713BD06BB120BC4AA90 = {
+			isa = PBXGroup;
+			children = (
+				8292374BF980AA40D29655FB /* Packages */,
+				5912750EB955ACE293ECB382 /* Sources */,
+				82FB66F8E01B12BA2BE3B99F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8292374BF980AA40D29655FB /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				60D2222119C9BDBD54FD5BFA /* PolaroidCarousel */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		82FB66F8E01B12BA2BE3B99F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A31A668979FDD051AB675E22 /* PolaroidDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		22B2E838AF98C67AD6CCFF21 /* PolaroidDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4991136E194B3C86E96DC00 /* Build configuration list for PBXNativeTarget "PolaroidDemo" */;
+			buildPhases = (
+				E7862C9AC342042395B88A67 /* Sources */,
+				5376C9EC4476119536F23615 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PolaroidDemo;
+			packageProductDependencies = (
+				EAD7FE8FE6896B94B10A56F0 /* PolaroidCarousel */,
+			);
+			productName = PolaroidDemo;
+			productReference = A31A668979FDD051AB675E22 /* PolaroidDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08D6FB189E3B6DC8F76F9CDA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = 6E16FDFDD6C41852C19301BF /* Build configuration list for PBXProject "PolaroidDemo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 66BC1713BD06BB120BC4AA90;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CE4BC95FC764E40A30A30C5D /* XCLocalSwiftPackageReference ".." */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 82FB66F8E01B12BA2BE3B99F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				22B2E838AF98C67AD6CCFF21 /* PolaroidDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E7862C9AC342042395B88A67 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4AFA10AF121C8839530C5A34 /* DeckControls.swift in Sources */,
+				F3AE24559DC6AC23C8628A56 /* FieldNotesView.swift in Sources */,
+				6D3F3A4E5FC4D6853A674FAF /* PolaroidDemoApp.swift in Sources */,
+				443D657DDE3B970A54B1A7F4 /* Postcard.swift in Sources */,
+				3A6DA9149094B3D32C63D32B /* PostcardView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		533244438F99393C69B729B7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 48KF4TL849;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Field Notes";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.levivig.PolaroidDemo;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		5A072757DA18F3341A19AAAA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		D9179C3C3CA699F23D11034F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 48KF4TL849;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Field Notes";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.levivig.PolaroidDemo;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DEB0667BA2586413778D0F35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6E16FDFDD6C41852C19301BF /* Build configuration list for PBXProject "PolaroidDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A072757DA18F3341A19AAAA /* Debug */,
+				DEB0667BA2586413778D0F35 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E4991136E194B3C86E96DC00 /* Build configuration list for PBXNativeTarget "PolaroidDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D9179C3C3CA699F23D11034F /* Debug */,
+				533244438F99393C69B729B7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		CE4BC95FC764E40A30A30C5D /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EAD7FE8FE6896B94B10A56F0 /* PolaroidCarousel */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PolaroidCarousel;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 08D6FB189E3B6DC8F76F9CDA /* Project object */;
+}
