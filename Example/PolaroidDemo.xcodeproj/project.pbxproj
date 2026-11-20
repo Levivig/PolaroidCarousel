@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3A6DA9149094B3D32C63D32B /* PostcardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD09BA1ABE83EE2958C70E4F /* PostcardView.swift */; };
 		3E11A6146069D2069B2C8377 /* PolaroidCarousel in Frameworks */ = {isa = PBXBuildFile; productRef = EAD7FE8FE6896B94B10A56F0 /* PolaroidCarousel */; };
+		4152808EA888CED6BDBFA422 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 5CA601F25118A8506E35D8FD /* AppIcon.icon */; };
 		443D657DDE3B970A54B1A7F4 /* Postcard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB952E7E8C8F2827531125E /* Postcard.swift */; };
 		4AFA10AF121C8839530C5A34 /* DeckControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF6BABBA5473089A22F3D72 /* DeckControls.swift */; };
 		6D3F3A4E5FC4D6853A674FAF /* PolaroidDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CA720D838DAB77DDE1461E2 /* PolaroidDemoApp.swift */; };
@@ -20,6 +21,7 @@
 		25ECAACA6C68CF14AB0B65AC /* PostcardBackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostcardBackView.swift; sourceTree = "<group>"; };
 		2BF6BABBA5473089A22F3D72 /* DeckControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckControls.swift; sourceTree = "<group>"; };
 		55F923B419FDFE323A7A94BC /* FieldNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FieldNotesView.swift; sourceTree = "<group>"; };
+		5CA601F25118A8506E35D8FD /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		60D2222119C9BDBD54FD5BFA /* PolaroidCarousel */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PolaroidCarousel; path = ..; sourceTree = SOURCE_ROOT; };
 		7BB952E7E8C8F2827531125E /* Postcard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Postcard.swift; sourceTree = "<group>"; };
 		8CA720D838DAB77DDE1461E2 /* PolaroidDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolaroidDemoApp.swift; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				8292374BF980AA40D29655FB /* Packages */,
+				B34BA3762C478155F5C05498 /* Resources */,
 				5912750EB955ACE293ECB382 /* Sources */,
 				82FB66F8E01B12BA2BE3B99F /* Products */,
 			);
@@ -77,6 +80,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		B34BA3762C478155F5C05498 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5CA601F25118A8506E35D8FD /* AppIcon.icon */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -85,6 +96,7 @@
 			buildConfigurationList = E4991136E194B3C86E96DC00 /* Build configuration list for PBXNativeTarget "PolaroidDemo" */;
 			buildPhases = (
 				E7862C9AC342042395B88A67 /* Sources */,
+				28316FA4FE47A431686D4161 /* Resources */,
 				5376C9EC4476119536F23615 /* Frameworks */,
 			);
 			buildRules = (
@@ -129,6 +141,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		28316FA4FE47A431686D4161 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4152808EA888CED6BDBFA422 /* AppIcon.icon in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E7862C9AC342042395B88A67 /* Sources */ = {

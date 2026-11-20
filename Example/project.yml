@@ -9,11 +9,16 @@ targets:
   PolaroidDemo:
     type: application
     platform: iOS
-    sources: [Sources]
+    sources:
+      - Sources
+      - path: Resources/AppIcon.icon
+        type: file
+        buildPhase: resources
     dependencies:
       - package: PolaroidCarousel
     settings:
       base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         PRODUCT_BUNDLE_IDENTIFIER: com.example.PolaroidDemo
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: Field Notes
