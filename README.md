@@ -2,6 +2,8 @@
 
 A dependency-free iOS 16+ carousel with an overlapping deck, continuous scroll transforms, and snapping. Fan mode shows each card once in decks of two to four cards, while still wrapping in both directions. The layout and scrolling are UIKit; a `UIViewRepresentable` hosts SwiftUI card content through `UIHostingConfiguration`, which requires iOS 16. Requires Swift 6.2 or later (Xcode 26 or later).
 
+![Illustrated postcards fanned out in the Field Notes demo](docs/field-notes-deck.png)
+
 ## Try the demo
 
 Open [Example/PolaroidDemo.xcodeproj](Example/PolaroidDemo.xcodeproj), choose the **PolaroidDemo** scheme and an iPhone simulator, then run. **Field Notes** shows 15 original illustrated postcards. Use **Deck size** to try any count from 0 to 15 without restarting, then swipe in either direction to test wrapping. With two to four cards, **Fan** shows each postcard only once. Tap a postcard to flip it open and read its note, use the arrow buttons to select programmatically, or switch between **Fan** and **Stack**. The demo uses the same public SwiftUI API shown below.
@@ -12,19 +14,19 @@ The Xcode project already points to the local package. To regenerate it after ad
 
 ## Use it in another app
 
-In Xcode, choose **File → Add Package Dependencies…** and enter the repository's SSH URL:
+In Xcode, choose **File → Add Package Dependencies…** and enter the repository URL:
 
 ```text
-git@github.com:Levivig/PolaroidCarousel.git
+https://github.com/Levivig/PolaroidCarousel.git
 ```
 
-Choose **Up to Next Minor Version** starting at `0.1.1` (the first version supporting iOS 16), then add the `PolaroidCarousel` library product to your app target. The repository is private: the GitHub account associated with your SSH key must have read access. CI also needs read access, for example through a read-only deploy key. Check your local access with `git ls-remote git@github.com:Levivig/PolaroidCarousel.git`.
+Choose **Up to Next Minor Version** starting at `0.1.1` (the first version supporting iOS 16), then add the `PolaroidCarousel` library product to your app target.
 
 If your app uses a `Package.swift`, add the dependency and link its product in your target:
 
 ```swift
 // In the package's dependencies:
-.package(url: "git@github.com:Levivig/PolaroidCarousel.git", .upToNextMinor(from: "0.1.1")),
+.package(url: "https://github.com/Levivig/PolaroidCarousel.git", .upToNextMinor(from: "0.1.1")),
 
 // In the target's dependencies:
 .product(name: "PolaroidCarousel", package: "PolaroidCarousel"),
