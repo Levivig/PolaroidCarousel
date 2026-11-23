@@ -2,7 +2,7 @@
 
 A dependency-free iOS 16+ carousel with an overlapping deck, continuous scroll transforms, and snapping. Fan mode shows each card once in decks of two to four cards, while still wrapping in both directions. The layout and scrolling are UIKit; a `UIViewRepresentable` hosts SwiftUI card content through `UIHostingConfiguration`, which requires iOS 16. Requires Swift 6.2 or later (Xcode 26 or later).
 
-![Illustrated postcards fanned out in the Field Notes demo](docs/field-notes-deck.png)
+<img src="docs/field-notes-deck.png" alt="Illustrated postcards fanned out in the Field Notes demo" width="520">
 
 ## Try the demo
 
